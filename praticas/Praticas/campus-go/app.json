@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "campus-go",
+    "slug": "campus-go",
+    "scheme": "campusgo",
+    "version": "1.0.0",
+    "plugins": [
+      "expo-router",
+      "expo-status-bar"
+    ]
+  }
+}
