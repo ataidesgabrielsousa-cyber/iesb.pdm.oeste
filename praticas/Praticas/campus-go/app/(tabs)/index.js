@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Pressable,
   RefreshControl,
@@ -10,6 +11,20 @@ import {
 } from 'react-native';
 import useNotices from '../../hooks/useNotices';
 import FadeIn from '../../components/FadeIn';
+import { api } from '../../services/api';
+
+async function createNotice() {
+  try {
+    const created = await api.create('posts', {
+      title: 'Novo aviso',
+      body: 'Aviso criado pelo CampusGo',
+      userId: 1,
+    });
+    Alert.alert('Aviso criado', `Id devolvido: ${created.id}\n(O JSONPlaceholder não grava de fato.)`);
+  } catch (err) {
+    Alert.alert('Erro', err.message);
+  }
+}
 
 export default function Home() {
   const { notices, isLoading, error, reload } = useNotices();
@@ -48,6 +63,11 @@ export default function Home() {
       keyExtractor={(item) => String(item.id)}
       contentContainerStyle={styles.list}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      ListHeaderComponent={
+        <Pressable style={[styles.button, styles.createButton]} onPress={createNotice}>
+          <Text style={styles.buttonText}>Criar aviso</Text>
+        </Pressable>
+      }
       ListEmptyComponent={
         <Text style={styles.empty}>Nenhum aviso por enquanto. Puxe a lista para atualizar.</Text>
       }
@@ -64,6 +84,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 12 },
   list: { padding: 16 },
+  createButton: { marginBottom: 12 },
   card: {
     backgroundColor: '#FFFFFF',
     padding: 16,
@@ -76,6 +97,6 @@ const styles = StyleSheet.create({
   errorTitle: { fontSize: 16, fontWeight: '700', color: '#DC2626', textAlign: 'center' },
   muted: { color: '#6B7280', textAlign: 'center' },
   empty: { textAlign: 'center', marginTop: 40, color: '#6B7280' },
-  button: { backgroundColor: '#2563EB', paddingVertical: 12, paddingHorizontal: 24, borderRadius: 10 },
+  button: { backgroundColor: '#2563EB', paddingVertical: 12, paddingHorizontal: 24, borderRadius: 10, alignItems: 'center' },
   buttonText: { color: '#FFFFFF', fontWeight: '600' },
 });

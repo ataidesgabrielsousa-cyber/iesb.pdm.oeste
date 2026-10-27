@@ -1,9 +1,10 @@
 ﻿import { useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { getCurrentPlace } from '../../services/location';
 import { scheduleReminder } from '../../services/notifications';
+import DoneIcon from '../../components/DoneIcon';
 
 const TASKS = [
   { id: '7', title: 'Entregar relatório' },
@@ -13,6 +14,7 @@ const TASKS = [
 
 export default function Tasks() {
   const [place, setPlace] = useState(null);
+  const [done, setDone] = useState(false);
 
   async function handleCheckIn() {
     try {
@@ -37,6 +39,7 @@ export default function Tasks() {
   }
 
   async function handleDone() {
+    setDone(true);
     try {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch {
@@ -76,6 +79,9 @@ export default function Tasks() {
       <Pressable style={[styles.button, styles.success]} onPress={handleDone}>
         <Text style={styles.buttonText}>Concluir</Text>
       </Pressable>
+      <View style={styles.doneIcon}>
+        <DoneIcon trigger={done} />
+      </View>
     </ScrollView>
   );
 }
@@ -97,4 +103,5 @@ const styles = StyleSheet.create({
   success: { backgroundColor: '#16A34A' },
   buttonText: { color: '#FFFFFF', fontWeight: '600', fontSize: 16 },
   place: { textAlign: 'center', color: '#374151' },
+  doneIcon: { alignItems: 'center', marginTop: 8 },
 });
